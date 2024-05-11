@@ -1,7 +1,7 @@
 openapi: 3.0.0
 servers:
-  - description: Cluster Endpoint
-    url: /api
+- description: Cluster Endpoint
+  url: /api
 info:
   description: Medication management for the Web-In-Cloud system
   version: "1.0.0"
@@ -12,23 +12,25 @@ info:
     name: CC BY 4.0
     url: "https://creativecommons.org/licenses/by/4.0/"
 tags:
-  - name: medicationList
-    description: Medication List API
+- name: medicationList
+  description: Medication List API
+- name: ambulances
+  description: Ambulance details
 paths:
   "/medication/{ambulanceId}/entries":
     get:
       tags:
-        - medicationList
+      - medicationList
       summary: Provides the ambulance medication list
       operationId: getMedicationListEntries
       description: By using ambulanceId you get list of entries in ambulance medication list
       parameters:
-        - in: path
-          name: ambulanceId
-          description: pass the id of the particular ambulance
-          required: true
-          schema:
-            type: string
+      - in: path
+        name: ambulanceId
+        description: pass the id of the particular ambulance
+        required: true
+        schema:
+          type: string
       responses:
         "200":
           description: value of the medication list entries
@@ -45,17 +47,17 @@ paths:
           description: Ambulance with such ID does not exist
     post:
       tags:
-        - medicationList
+      - medicationList
       summary: Saves new entry into medication list
       operationId: createMedicationListEntry
       description: Use this method to store new medication into the medication list.
       parameters:
-        - in: path
-          name: ambulanceId
-          description: pass the id of the particular ambulance
-          required: true
-          schema:
-            type: string
+      - in: path
+        name: ambulanceId
+        description: pass the id of the particular ambulance
+        required: true
+        schema:
+          type: string
       requestBody:
         content:
           application/json:
@@ -85,24 +87,24 @@ paths:
   "/medication-list/{ambulanceId}/entries/{entryId}":
     get:
       tags:
-        - medicationList
+      - medicationList
       summary: Provides details about a specific medication
       operationId: getMedicationListEntry
       description: >-
         By using ambulanceId and entryId you can details of specific medication.
       parameters:
-        - in: path
-          name: ambulanceId
-          description: pass the id of the particular ambulance
-          required: true
-          schema:
-            type: string
-        - in: path
-          name: entryId
-          description: pass the id of the particular entry in the medication list
-          required: true
-          schema:
-            type: string
+      - in: path
+        name: ambulanceId
+        description: pass the id of the particular ambulance
+        required: true
+        schema:
+          type: string
+      - in: path
+        name: entryId
+        description: pass the id of the particular entry in the medication list
+        required: true
+        schema:
+          type: string
       responses:
         "200":
           description: Details of the specific medication
@@ -117,23 +119,23 @@ paths:
           description: Ambulance or Entry with such ID does not exists
     put:
       tags:
-        - medicationList
+      - medicationList
       summary: Updates specific medication details
       operationId: updateMedicationListEntry
       description: Use this method to update content of a specific medication.
       parameters:
-        - in: path
-          name: ambulanceId
-          description: pass the id of the particular ambulance
-          required: true
-          schema:
-            type: string
-        - in: path
-          name: entryId
-          description: pass the id of the specific medication
-          required: true
-          schema:
-            type: string
+      - in: path
+        name: ambulanceId
+        description: pass the id of the particular ambulance
+        required: true
+        schema:
+          type: string
+      - in: path
+        name: entryId
+        description: pass the id of the specific medication
+        required: true
+        schema:
+          type: string
       requestBody:
         content:
           application/json:
@@ -156,34 +158,84 @@ paths:
                   $ref: "#/components/examples/MedicationListEntryExample"
         "403":
           description: >-
-            Value of the entryID and the data id is mismatching. Details are
-            provided in the response body.
+            Value of the entryID and the data id is mismatching. Details are provided in the response body.
         "404":
           description: Ambulance or Entry with such ID does not exists
     delete:
       tags:
-        - medicationList
+      - medicationList
       summary: Deletes a specific medication
       operationId: deleteMedicationListEntry
       description: Use this method to delete the specific medication from the list.
       parameters:
-        - in: path
-          name: ambulanceId
-          description: pass the id of the particular ambulance
-          required: true
-          schema:
-            type: string
-        - in: path
-          name: entryId
-          description: Pass the ID of the specific medication
-          required: true
-          schema:
-            type: string
+      - in: path
+        name: ambulanceId
+        description: pass the id of the particular ambulance
+        required: true
+        schema:
+          type: string
+      - in: path
+        name: entryId
+        description: Pass the ID of the specific medication
+        required: true
+        schema:
+          type: string
       responses:
         "204":
           description: Item deleted
         "404":
           description: Ambulance or Entry with such ID does not exists
+  "/ambulance":
+    post:
+      tags:
+      - ambulances
+      summary: Saves new ambulance definition
+      operationId: createAmbulance
+      description: Use this method to initialize new ambulance in the system
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Ambulance"
+            examples:
+              request-sample:
+                $ref: "#/components/examples/AmbulanceExample"
+        description: Ambulance details to store
+        required: true
+      responses:
+        "200":
+          description: >-
+            Value of stored ambulance
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Ambulance"
+              examples:
+                updated-response:
+                  $ref: "#/components/examples/AmbulanceExample"
+        "400":
+          description: Missing mandatory properties of input object.
+        "409":
+          description: Entry with the specified id already exists
+  "/ambulance/{ambulanceId}":
+    delete:
+      tags:
+      - ambulances
+      summary: Deletes specific ambulance
+      operationId: deleteAmbulance
+      description: Use this method to delete the specific ambulance from the system.
+      parameters:
+      - in: path
+        name: ambulanceId
+        description: pass the id of the particular ambulance
+        required: true
+        schema:
+          type: string
+      responses:
+        "204":
+          description: Item deleted
+        "404":
+          description: Ambulance with such ID does not exist
 components:
   schemas:
     MedicationListEntry:
@@ -214,6 +266,27 @@ components:
           description: Expiration date of the medication
       example:
         $ref: "#/components/examples/MedicationListEntryExample"
+    Ambulance:
+      type: object
+      required: ["id", "name", "roomNumber"]
+      properties:
+        id:
+          type: string
+          example: dentist-warenova
+          description: Unique identifier of the ambulance
+        name:
+          type: string
+          example: Zubná ambulancia Dr. Warenová
+          description: Human readable display name of the ambulance
+        roomNumber:
+          type: string
+          example: 356 - 3.posch
+        medicationList:
+          type: array
+          items:
+            $ref: '#/components/schemas/MedicationListEntry'
+      example:
+        $ref: "#/components/examples/AmbulanceExample"
   examples:
     MedicationListEntryExample:
       summary: Example Medication Entry
@@ -240,3 +313,22 @@ components:
         dosage: 200mg
         frequencyPerDay: 4
         expirationDate: "2025-08-15"
+    AmbulanceExample:
+      summary: Sample GP ambulance
+      description: |
+        Example of GP ambulance with medication list
+      value:
+        id: gp-warenova
+        name: Ambulancia všeobecného lekárstva Dr. Warenová
+        roomNumber: 356 - 3.posch
+        medicationList:
+        - id: med12345
+          name: Paracetamol
+          dosage: 500mg
+          frequencyPerDay: 3
+          expirationDate: "2024-05-01"
+        - id: med67890
+          name: Ibuprofen
+          dosage: 200mg
+          frequencyPerDay: 4
+          expirationDate: "2025-08-15"

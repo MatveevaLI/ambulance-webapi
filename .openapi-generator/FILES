@@ -1,4 +1,6 @@
 internal/ambulance_wl/README.md
+internal/ambulance_wl/api_ambulances.go
 internal/ambulance_wl/api_medication_list.go
+internal/ambulance_wl/model_ambulance.go
 internal/ambulance_wl/model_medication_list_entry.go
 internal/ambulance_wl/routers.go
