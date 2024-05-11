@@ -16,44 +16,44 @@ spec:
       - name: init-scripts
         configMap:
           name: matveeva-ambulance-webapi-mongodb-init
-        initContainers:
-        - name: init-mongodb
-          image: mongo:latest
-          imagePullPolicy: Always
-          command: ['mongosh', "--nodb", '-f', '/scripts/init-db.js']
-          volumeMounts:
-          - name: init-scripts
-            mountPath: /scripts
-          env:
-          - name: AMBULANCE_API_PORT
-            value: "8080"
-          - name: AMBULANCE_API_MONGODB_HOST
-            value: mongodb
-          - name: AMBULANCE_API_MONGODB_PORT
-            value: "27017"
-          - name: AMBULANCE_API_MONGODB_USERNAME
-            value: ""
-          - name: AMBULANCE_API_MONGODB_PASSWORD
-            value: ""
-          - name: AMBULANCE_API_MONGODB_DATABASE
-            valueFrom:
-              configMapKeyRef:
-                name: matveeva-ambulance-webapi-config
-                key: database
-          - name: AMBULANCE_API_MONGODB_COLLECTION
-            valueFrom:
-              configMapKeyRef:
-                name: matveeva-ambulance-webapi-config
-                key: collection
-          - name: RETRY_CONNECTION_SECONDS
-            value: "5"
-          resources:
-            requests:
-              memory: "128Mi"
-              cpu: "0.01"
-            limits:
-              memory: "256Mi"
-              cpu: "0.1"
+      initContainers:
+      - name: init-mongodb
+        image: mongo:latest
+        imagePullPolicy: Always
+        command: ['mongosh', "--nodb", '-f', '/scripts/init-db.js']
+        volumeMounts:
+        - name: init-scripts
+          mountPath: /scripts
+        env:
+        - name: AMBULANCE_API_PORT
+          value: "8080"
+        - name: AMBULANCE_API_MONGODB_HOST
+          value: mongodb
+        - name: AMBULANCE_API_MONGODB_PORT
+          value: "27017"
+        - name: AMBULANCE_API_MONGODB_USERNAME
+          value: ""
+        - name: AMBULANCE_API_MONGODB_PASSWORD
+          value: ""
+        - name: AMBULANCE_API_MONGODB_DATABASE
+          valueFrom:
+            configMapKeyRef:
+              name: matveeva-ambulance-webapi-config
+              key: database
+        - name: AMBULANCE_API_MONGODB_COLLECTION
+          valueFrom:
+            configMapKeyRef:
+              name: matveeva-ambulance-webapi-config
+              key: collection
+        - name: RETRY_CONNECTION_SECONDS
+          value: "5"
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "0.01"
+          limits:
+            memory: "256Mi"
+            cpu: "0.1"
       containers:
       - name: matveeva-ambulance-wl-webapi-container
         image: matveevali/ambulance-wl-webapi:latest
