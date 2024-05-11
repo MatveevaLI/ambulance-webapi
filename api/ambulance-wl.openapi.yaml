@@ -1,0 +1,242 @@
+openapi: 3.0.0
+servers:
+  - description: Cluster Endpoint
+    url: /api
+info:
+  description: Medication management for the Web-In-Cloud system
+  version: "1.0.0"
+  title: Medication Management API
+  contact:
+    email: ladaivanna.matveeva@gmail.com
+  license:
+    name: CC BY 4.0
+    url: "https://creativecommons.org/licenses/by/4.0/"
+tags:
+  - name: medicationList
+    description: Medication List API
+paths:
+  "/medication/{ambulanceId}/entries":
+    get:
+      tags:
+        - medicationList
+      summary: Provides the ambulance medication list
+      operationId: getMedicationListEntries
+      description: By using ambulanceId you get list of entries in ambulance medication list
+      parameters:
+        - in: path
+          name: ambulanceId
+          description: pass the id of the particular ambulance
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: value of the medication list entries
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/MedicationListEntry"
+              examples:
+                response:
+                  $ref: "#/components/examples/MedicationListEntriesExample"
+        "404":
+          description: Ambulance with such ID does not exist
+    post:
+      tags:
+        - medicationList
+      summary: Saves new entry into medication list
+      operationId: createMedicationListEntry
+      description: Use this method to store new medication into the medication list.
+      parameters:
+        - in: path
+          name: ambulanceId
+          description: pass the id of the particular ambulance
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MedicationListEntry"
+            examples:
+              request-sample:
+                $ref: "#/components/examples/MedicationListEntryExample"
+        description: Medication details to add
+        required: true
+      responses:
+        "200":
+          description: The newly added medication entry.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MedicationListEntry"
+              examples:
+                updated-response:
+                  $ref: "#/components/examples/MedicationListEntryExample"
+        "400":
+          description: Missing mandatory properties of input object.
+        "404":
+          description: Ambulance with such ID does not exists
+        "409":
+          description: A medication entry with the specified ID already exists.
+  "/medication-list/{ambulanceId}/entries/{entryId}":
+    get:
+      tags:
+        - medicationList
+      summary: Provides details about a specific medication
+      operationId: getMedicationListEntry
+      description: >-
+        By using ambulanceId and entryId you can details of specific medication.
+      parameters:
+        - in: path
+          name: ambulanceId
+          description: pass the id of the particular ambulance
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: entryId
+          description: pass the id of the particular entry in the medication list
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Details of the specific medication
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MedicationListEntry"
+              examples:
+                response:
+                  $ref: "#/components/examples/MedicationListEntryExample"
+        "404":
+          description: Ambulance or Entry with such ID does not exists
+    put:
+      tags:
+        - medicationList
+      summary: Updates specific medication details
+      operationId: updateMedicationListEntry
+      description: Use this method to update content of a specific medication.
+      parameters:
+        - in: path
+          name: ambulanceId
+          description: pass the id of the particular ambulance
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: entryId
+          description: pass the id of the specific medication
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MedicationListEntry"
+            examples:
+              request:
+                $ref: "#/components/examples/MedicationListEntryExample"
+        description: Medication details to update
+        required: true
+      responses:
+        "200":
+          description: The updated medication details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MedicationListEntry"
+              examples:
+                response:
+                  $ref: "#/components/examples/MedicationListEntryExample"
+        "403":
+          description: >-
+            Value of the entryID and the data id is mismatching. Details are
+            provided in the response body.
+        "404":
+          description: Ambulance or Entry with such ID does not exists
+    delete:
+      tags:
+        - medicationList
+      summary: Deletes a specific medication
+      operationId: deleteMedicationListEntry
+      description: Use this method to delete the specific medication from the list.
+      parameters:
+        - in: path
+          name: ambulanceId
+          description: pass the id of the particular ambulance
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: entryId
+          description: Pass the ID of the specific medication
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Item deleted
+        "404":
+          description: Ambulance or Entry with such ID does not exists
+components:
+  schemas:
+    MedicationListEntry:
+      type: object
+      required: [id, name, dosage, frequencyPerDay]
+      properties:
+        id:
+          type: string
+          example: med12345
+          description: Unique id of the entry in this medication list
+        name:
+          type: string
+          example: Paracetamol
+          description: Name of medication in medication list
+        dosage:
+          type: string
+          example: 500mg
+          description: Dosage of the medication per intake
+        frequencyPerDay:
+          type: integer
+          format: int32
+          example: 3
+          description: How many times the medication should be taken per day
+        expirationDate:
+          type: string
+          format: date
+          example: "2024-05-01"
+          description: Expiration date of the medication
+      example:
+        $ref: "#/components/examples/MedicationListEntryExample"
+  examples:
+    MedicationListEntryExample:
+      summary: Example Medication Entry
+      description: |
+        Example entry representing a medication in the medication list.
+      value:
+        id: med12345
+        name: Paracetamol
+        dosage: 500mg
+        frequencyPerDay: 3
+        expirationDate: "2024-05-01"
+    MedicationListEntriesExample:
+      summary: List of Medications
+      description: |
+        Example list containing several medications.
+      value:
+      - id: med12345
+        name: Paracetamol
+        dosage: 500mg
+        frequencyPerDay: 3
+        expirationDate: "2024-05-01"
+      - id: med67890
+        name: Ibuprofen
+        dosage: 200mg
+        frequencyPerDay: 4
+        expirationDate: "2025-08-15"
