@@ -47,7 +47,6 @@ let result = db[collection].insertMany([
         "id": "bobulova",
         "name": "Dr.Bobulová",
         "roomNumber": "123"
-
     }
 ]);
 
